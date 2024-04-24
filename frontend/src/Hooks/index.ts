@@ -16,7 +16,7 @@
             },
           });
           console.log(response);
-          setBlogs(response.data.blogs);
+          setBlogs(response.data);
           setLoading(false);
         } catch (error) {
           console.error("Error fetching blogs:", error);
