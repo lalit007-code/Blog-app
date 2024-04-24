@@ -4,7 +4,7 @@ import { decode, sign, verify } from "hono/jwt";
 import { Hono } from "hono";
 import { signinInput, signupInput } from "@lalit_singh/blog-common";
 
-export const userRouter = new Hono<{
+export const  userRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
@@ -47,7 +47,10 @@ userRouter.post("/signup", async (c) => {
       },
       c.env.JWT_SECRET
     );
-    return c.text(token);
+
+    return c.json({
+      token,
+    });
   } catch (e) {
     c.status(411);
     return c.text("User alreasy exist");
