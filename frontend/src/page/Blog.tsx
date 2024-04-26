@@ -4,14 +4,13 @@ import { FullBlog } from "../components/FullBlog";
 import { AppBar } from "../components/AppBar";
 import { FullBlogSkeleton } from "../components/FullBlogSkeleton";
 
-
 export const Blog = () => {
   const { id } = useParams();
   const { blog, loading } = useBlog({
     id: id || "",
   });
 
-  if (loading) {
+  if (loading || !blog) {
     return (
       <div>
         <AppBar />
