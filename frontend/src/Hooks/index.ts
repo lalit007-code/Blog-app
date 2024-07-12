@@ -9,6 +9,7 @@ export interface Blog {
   author: {
     name: string;
   };
+  createAt: string;
 }
 
 export const useBlog = ({ id }: { id: string }) => {

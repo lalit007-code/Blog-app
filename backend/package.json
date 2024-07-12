@@ -1,17 +1,21 @@
 {
-  "scripts": {
-    "dev": "wrangler dev src/index.ts",
-    "deploy": "wrangler deploy --minify src/index.ts"
-  },
-  "dependencies": {
-    "@lalit_singh/blog-common": "^1.0.0",
-    "@prisma/client": "^5.13.0",
-    "@prisma/extension-accelerate": "^1.0.0",
-    "hono": "^4.2.5"
-  },
-  "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240403.0",
-    "prisma": "^5.13.0",
-    "wrangler": "^3.47.0"
-  }
+    "scripts": {
+        "dev": "wrangler dev src/index.ts",
+        "deploy": "wrangler deploy --minify src/index.ts"
+    },
+    "dependencies": {
+        "@lalit_singh/blog-common": "^1.0.0",
+        "@prisma/client": "^5.13.0",
+        "@prisma/extension-accelerate": "^1.0.0",
+        "bcrypt": "^5.1.1",
+        "hono": "^4.2.5"
+    },
+    "devDependencies": {
+        "@cloudflare/workers-types": "^4.20240403.0",
+        "@types/bcrypt": "^5.0.2",
+        "prisma": "^5.13.0",
+        "rollup-plugin-node-polyfills": "^0.2.1",
+        "wrangler": "^3.47.0"
+    },
+    "type": "module"
 }

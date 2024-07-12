@@ -1,20 +1,22 @@
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { decode, sign, verify } from "hono/jwt";
+import { sign } from "hono/jwt";
 import { Hono } from "hono";
 import { signinInput, signupInput } from "@lalit_singh/blog-common";
 
-export const  userRouter = new Hono<{
+export const userRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
     JWT_SECRET: string;
   };
 }>();
 
+//Signup
 userRouter.post("/signup", async (c) => {
   const body = await c.req.json();
+  console.log(body);
   const { success } = signupInput.safeParse(body);
-
+  console.log(success, "body parsed ");
   try {
     if (!success) {
       c.status(411);
@@ -34,6 +36,7 @@ userRouter.post("/signup", async (c) => {
   }).$extends(withAccelerate());
 
   try {
+    console.log("inside creation");
     const user = await prisma.user.create({
       data: {
         name: body.name,
@@ -41,6 +44,8 @@ userRouter.post("/signup", async (c) => {
         password: body.password,
       },
     });
+    console.log("please");
+    console.log(user, " user creation");
     const token = await sign(
       {
         id: user.id,
@@ -50,13 +55,15 @@ userRouter.post("/signup", async (c) => {
 
     return c.json({
       token,
+      message: "user created successfully",
     });
   } catch (e) {
     c.status(411);
-    return c.text("User alreasy exist");
+    return c.text("unable to signin");
   }
 });
 
+//SignIn
 userRouter.post("/signin", async (c) => {
   const body = await c.req.json();
   const { success } = signinInput.safeParse(body);
@@ -68,7 +75,7 @@ userRouter.post("/signin", async (c) => {
   try {
     const user = await prisma.user.findFirst({
       where: {
-        email: body.email,
+        email: body.email, //feild : given value to check
         password: body.password,
       },
     });
@@ -82,11 +89,14 @@ userRouter.post("/signin", async (c) => {
       },
       c.env.JWT_SECRET
     );
+    const { password: pass, ...rest } = user;
     return c.json({
       token,
       message: "login successfully ",
+      rest,
     });
   } catch (e) {
+    console.log(e);
     c.status(411);
     return c.text("Invalid");
   }

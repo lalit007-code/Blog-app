@@ -28,7 +28,7 @@ export const Publish = () => {
         <button
           onClick={async () => {
             const response = await axios.post(
-              `${BACKEND_URL}/api/v1/blog/`,
+              `${BACKEND_URL}/api/v1/blog/create`,
               {
                 title,
                 content: description,

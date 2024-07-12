@@ -1,17 +1,18 @@
 import { useBlogs } from "../Hooks";
 import { AppBar } from "../components/AppBar";
 import { BlogCard } from "../components/BlogCard";
-import { BlogSkeleton } from "../components/BlogSkeleton";
+import { BlogCardSkeleton } from "../components/BlogSkeleton";
 
 export const Blogs = () => {
   const { blogs, loading } = useBlogs();
+  // console.log(blogs);
 
   if (loading) {
     return (
       <div>
         <AppBar />
-        <div>   
-          <BlogSkeleton />
+        <div>
+          <BlogCardSkeleton />
         </div>
       </div>
     );
@@ -21,13 +22,14 @@ export const Blogs = () => {
       <div>
         <AppBar />
       </div>
-      <div className="flex justify-center ">
-        <div className="">
+      <div className="flex justify-center items-center  ">
+        <div className="grid grid-cols-3 w-full gap-8 mt-10 pl-10 ">
           {blogs.map((blog) => (
             <BlogCard
+              key={blog.id}
               id={blog.id}
               authorName={blog.author.name || "Anonyms"}
-              publishedDate={"18-02-2002"}
+              createdAt={blog.createAt}
               content={blog.content}
               title={blog.title}
             />

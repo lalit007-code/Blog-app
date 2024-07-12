@@ -15,6 +15,7 @@ export const blogRouter = new Hono<{
   };
 }>();
 
+//middleware
 blogRouter.use("/*", async (c, next) => {
   const authHeader = c.req.header("authorization") || "";
 
@@ -40,7 +41,7 @@ blogRouter.use("/*", async (c, next) => {
   }
 });
 
-blogRouter.post("/", async (c) => {
+blogRouter.post("/create", async (c) => {
   const body = await c.req.json();
   const { success } = createBlogInput.safeParse(body);
   try {
@@ -71,10 +72,11 @@ blogRouter.post("/", async (c) => {
 
   return c.json({
     id: blog.id,
+    message: "blog created sucessfully",
   });
 });
 
-blogRouter.put("/", async (c) => {
+blogRouter.put("/update/:id", async (c) => {
   const body = await c.req.json();
   const { success } = updateBlogInput.safeParse(body);
   try {
@@ -106,11 +108,11 @@ blogRouter.put("/", async (c) => {
 
   return c.json({
     id: blog.id,
+    message: "blog updated successfully",
   });
 });
 
 //pagination
-
 blogRouter.get("/bulk", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env?.DATABASE_URL,
@@ -126,6 +128,7 @@ blogRouter.get("/bulk", async (c) => {
           name: true,
         },
       },
+      createdAt: true,
     },
   });
 
@@ -151,6 +154,7 @@ blogRouter.get("/:id", async (c) => {
             name: true,
           },
         },
+        createdAt: true,
       },
     });
     return c.json({
@@ -160,6 +164,36 @@ blogRouter.get("/:id", async (c) => {
     c.status(404);
     return c.json({
       message: "not able to find the blog",
+    });
+  }
+});
+
+blogRouter.delete("delete/:id", async (c) => {
+  const id = c.req.param("id");
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+  try {
+    const deletingBlog = await prisma.post.delete({
+      where: {
+        id: id,
+      },
+    });
+
+    // console.log(deletingBlog);
+
+    if (!deletingBlog) {
+      return c.json({
+        message: "something went wrong",
+      });
+    }
+    return c.json({
+      message: "blog deleted successfully",
+    });
+  } catch (error) {
+    console.log("Error in deleting blog", Error);
+    return c.json({
+      message: "error deleting blog, please try again",
     });
   }
 });
