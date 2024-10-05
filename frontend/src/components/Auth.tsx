@@ -1,28 +1,39 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import { SignupInput } from "@lalit_singh/blog-common";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
+import { useSetRecoilState } from "recoil";
+import { token } from "../store/atom";
 
 export const Auth = ({ type }: { type: "signin" | "signup" }) => {
+  const setToken = useSetRecoilState(token);
   const navigate = useNavigate();
   const [postInputs, setPostInputs] = useState<SignupInput>({
     email: "",
     password: "",
     name: "",
   });
-  console.log(postInputs.email, postInputs.name, postInputs.password);
-  async function sendRequest(e) {
+
+  async function sendRequest(e: MouseEvent<HTMLButtonElement, MouseEvent>) {
     try {
       e.preventDefault();
       const response = await axios.post(
         `${BACKEND_URL}/api/v1/user/${type === "signin" ? "signin" : "signup"}`,
         postInputs
       );
-      const { token } = response.data;
+      // console.log(response);
+      const token = response.data.token;
+      // console.log(token);
+      setToken(token);
       localStorage.setItem("token", token);
-      navigate("/blogs");
+      if (type === "signin") {
+        navigate("/");
+      } else {
+        navigate("/signin");
+      }
     } catch (e) {
+      console.log(e);
       alert("error while signing up");
     }
   }
@@ -82,7 +93,7 @@ export const Auth = ({ type }: { type: "signin" | "signup" }) => {
           </div>
           <button
             type="submit"
-            onClick={() => sendRequest(e)}
+            onClick={(e) => sendRequest(e)}
             className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-full "
           >
             {type === "signup" ? "Sign up" : "Sign in"}

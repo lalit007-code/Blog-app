@@ -9,7 +9,7 @@ export interface Blog {
   author: {
     name: string;
   };
-  createAt: string;
+  createdAt: string;
 }
 
 export const useBlog = ({ id }: { id: string }) => {
@@ -56,7 +56,7 @@ export const useBlogs = () => {
             Authorization: localStorage.getItem("token"),
           },
         });
-        console.log(response);
+        // console.log(response);
         setBlogs(response.data);
         setLoading(false);
       } catch (error) {

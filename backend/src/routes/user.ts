@@ -68,6 +68,12 @@ userRouter.post("/signin", async (c) => {
   const body = await c.req.json();
   const { success } = signinInput.safeParse(body);
 
+  if (!success) {
+    return c.json({
+      message: "invalid input",
+    });
+  }
+
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());

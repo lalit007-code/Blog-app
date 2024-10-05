@@ -3,7 +3,7 @@ import { AppBar } from "./AppBar";
 import { Avatar } from "./BlogCard";
 
 export const FullBlog = ({ blog }: { blog: Blog }) => {
-  // const createAtDate = new Date(blog.createAt)
+  // console.log(blog.createdAt)
   return (
     <div>
       <AppBar />
@@ -12,7 +12,12 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
           <div className="col-span-8">
             <div className="text-5xl font-extrabold">{blog.title}</div>
             <div className="text-slate-500 pt-2">
-              Posted on {new Intl.DateTimeFormat("en-US").format(blog.createAt)}
+              Posted on{" "}
+              {new Intl.DateTimeFormat("en-US").format(
+                typeof blog.createdAt === "string"
+                  ? new Date(blog.createdAt)
+                  : blog.createdAt
+              )}
             </div>
             <div className="pt-4">{blog.content}</div>
           </div>
